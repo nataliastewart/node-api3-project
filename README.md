@@ -96,7 +96,37 @@ We have provided test data for the resources.
   - Implement all endpoints and middleware within `posts/postRouter.js`
 
 - Create a React App
+
   - Use `create-react-app` to create an application inside the root folder, name it `client`.
   - From the React application connect to the `/api/users` endpoint in the API and show the list of users.
   - Add functionality to show the details of a user, including their posts, when clicking a user name in the list. Use React Router to navigate to a `/users/:id` route to show the user details.
   - Add styling!
+
+  ***
+
+router.post("/:id/posts", async (req, res) => {
+// do your magic!
+const { id } = req.params;
+const newPost = req.body;
+try {
+const added = await dbPosters.insert({ user_id: id, ...newPost });
+res.status(201).json(added);
+} catch (error) {
+console.log(error);
+res.status(500).json({
+error: "There was an error while saving the post to the database",
+});
+}
+
+// dbPosters
+// .insert({ user_id: id, ...newPost })
+// .then((post) => {
+// res.status(201).json(post);
+// })
+// .catch((error) => {
+// console.log("catch error", error);
+// res.status(500).json({
+// error: "There was an error while saving the post to the database",
+// });
+// });
+});

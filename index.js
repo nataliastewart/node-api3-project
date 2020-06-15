@@ -5,13 +5,13 @@ const server = express();
 
 //import the router
 const postRouter = require("./posts/postRouter");
-const usersRouter = require("./users/userRouter");
+const userRouter = require("./users/userRouter");
 //middleware
 server.use(express.json());
 
 //use routes and endpoits
 server.use("/api/posts", postRouter);
-server.use("/api/users", usersRouter);
+server.use("/api/users", userRouter);
 
 server.listen(8000, () => {
   console.log("\n*** Server Running on http://localhost:8000 ***\n");

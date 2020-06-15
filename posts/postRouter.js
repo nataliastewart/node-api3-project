@@ -20,7 +20,7 @@ router.get("/:id", (req, res) => {
   // do your magic!
   const { id } = req.params;
   dbPosts.getById(id).then((post) => {
-    if (post.id == id) {
+    if (post) {
       res.status(200).json(post);
     } else {
       res.status(500).json({ message: "catch error getById" });
