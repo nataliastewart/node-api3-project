@@ -50,7 +50,7 @@ router.get("/", (req, res) => {
   dbUsers
     .get(req.body)
     .then((users) => {
-      res.status(200).json(users);
+      res.status(200).json({ headers: req.headers, users });
     })
     .catch((error) => {
       console.log("GET users catch error:", error);
