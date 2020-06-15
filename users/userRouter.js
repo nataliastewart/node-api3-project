@@ -5,15 +5,16 @@ const dbPosters = require("../posts/postDb");
 
 const router = express.Router();
 
-router.post("/", (req, res) => {
+router.post("/", requires("name"), (req, res) => {
   // do your magic!
+
   dbUsers
     .insert(req.body)
     .then((user) => {
       res.status(200).json(user);
     })
     .catch((error) => {
-      console.log("GET posts catch error:", error);
+      console.log("post a new user ERROR:", error);
     });
 });
 
@@ -57,16 +58,10 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", validateUserId, (req, res) => {
   // do your magic!
-  const { id } = req.params;
-  dbUsers.getById(id).then((user) => {
-    if (user.id == id) {
-      res.status(200).json(user);
-    } else {
-      res.status(500).json({ message: "catch error user getById" });
-    }
-  });
+
+  res.status(200).json(req.user);
 });
 
 router.get("/:id/posts", (req, res) => {
@@ -117,10 +112,28 @@ router.put("/:id", (req, res) => {
 
 function validateUserId(req, res, next) {
   // do your magic!
+  const { id } = req.params;
+  dbUsers.getById(id).then((user) => {
+    if (user) {
+      req.user = user;
+      next();
+    } else {
+      res.status(500).json({ message: "from middleware: user not found" });
+    }
+  });
 }
 
-function validateUser(req, res, next) {
-  // do your magic!
+function requires(prop) {
+  return function (req, res, next) {
+    //validateUser
+    if (req.body[prop]) {
+      next();
+    } else {
+      res.status(400).json({
+        message: `from middleware: Please provide the ${prop}`,
+      });
+    }
+  };
 }
 
 function validatePost(req, res, next) {

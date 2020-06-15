@@ -16,19 +16,22 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", validatePostId, (req, res) => {
   // do your magic!
-  const { id } = req.params;
-  dbPosts.getById(id).then((post) => {
-    if (post) {
-      res.status(200).json(post);
-    } else {
-      res.status(500).json({ message: "catch error getById" });
-    }
-  });
+
+  res.status(200).json(req.post);
+
+  // const { id } = req.params;
+  // dbPosts.getById(id).then((post) => {
+  //   if (post) {
+  //     res.status(200).json(post);
+  //   } else {
+  //     res.status(500).json({ message: "catch error getById" });
+  //   }
+  // });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", validatePostId, (req, res) => {
   // do your magic!
 
   const { id } = req.params;
@@ -50,7 +53,7 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", validatePostId, (req, res) => {
   // do your magic!
   const { id } = req.params;
   const post = req.body;
@@ -70,6 +73,15 @@ router.put("/:id", (req, res) => {
 
 function validatePostId(req, res, next) {
   // do your magic!
+  const { id } = req.params;
+  dbPosts.getById(id).then((post) => {
+    if (post) {
+      req.post = post;
+      next();
+    } else {
+      res.status(500).json({ message: "from middleware: post not found" });
+    }
+  });
 }
 
 module.exports = router;
